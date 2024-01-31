@@ -31,10 +31,40 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="variable" href="#InputData">InputData</a>
+                    <a class="class" href="#Config">Config</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Config.__init__">Config</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Config.path_input">path_input</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Config.path_output">path_output</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
-                    <a class="variable" href="#OutputData">OutputData</a>
+                    <a class="class" href="#InputData">InputData</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#InputData.__init__">InputData</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#InputData.acceleration">acceleration</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#InputData.sampling_rate">sampling_rate</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#OutputData">OutputData</a>
+                            <ul class="memberlist">
+                </ul>
+
             </li>
     </ul>
 
@@ -60,50 +90,208 @@
                         <label class="view-source-button" for="mod-data_model-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Internal data model.&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">import</span> <span class="nn">pathlib</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">InputData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">Placeholder, will be replaced by a more specific</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">type / pydantic model in the future.</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="n">OutputData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">Placeholder, will be replaced by a more specific</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">type / pydantic model in the future.</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="nd">@dataclass</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the actigraphy pipeline.</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    Contains all user-set parameters.</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">path_input</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">path_output</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="nd">@dataclass</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="k">class</span> <span class="nc">InputData</span><span class="p">:</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raw actigraphy data and metadata.</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    This class should provide access to all raw input data.</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">    It must not be mutated during processing.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">acceleration</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">float</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="nd">@dataclass</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="k">class</span> <span class="nc">OutputData</span><span class="p">:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Processed actigraphy data and metadata.</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">    This class should provide access to all processed data.</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">    It is mutated during processing.</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">pass</span>
 </span></pre></div>
 
 
             </section>
-                <section id="InputData">
-                    <div class="attr variable">
-            <span class="name">InputData</span>        =
-<span class="default_value">&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;</span>
+                <section id="Config">
+                            <input id="Config-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator">@dataclass</div>
 
-        
+    <span class="def">class</span>
+    <span class="name">Config</span>:
+
+                <label class="view-source-button" for="Config-view-source"><span>View Source</span></label>
+
     </div>
-    <a class="headerlink" href="#InputData"></a>
-    
-            <div class="docstring"><p>Placeholder, will be replaced by a more specific
-type / pydantic model in the future.</p>
+    <a class="headerlink" href="#Config"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Config-9"><a href="#Config-9"><span class="linenos"> 9</span></a><span class="nd">@dataclass</span>
+</span><span id="Config-10"><a href="#Config-10"><span class="linenos">10</span></a><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+</span><span id="Config-11"><a href="#Config-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the actigraphy pipeline.</span>
+</span><span id="Config-12"><a href="#Config-12"><span class="linenos">12</span></a>
+</span><span id="Config-13"><a href="#Config-13"><span class="linenos">13</span></a><span class="sd">    Contains all user-set parameters.</span>
+</span><span id="Config-14"><a href="#Config-14"><span class="linenos">14</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Config-15"><a href="#Config-15"><span class="linenos">15</span></a>
+</span><span id="Config-16"><a href="#Config-16"><span class="linenos">16</span></a>    <span class="n">path_input</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
+</span><span id="Config-17"><a href="#Config-17"><span class="linenos">17</span></a>    <span class="n">path_output</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Configuration for the actigraphy pipeline.</p>
+
+<p>Contains all user-set parameters.</p>
 </div>
 
 
-                </section>
-                <section id="OutputData">
-                    <div class="attr variable">
-            <span class="name">OutputData</span>        =
-<span class="default_value">&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;</span>
+                            <div id="Config.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">Config</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">path_input</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>, </span><span class="param"><span class="n">path_output</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span></span>)</span>
 
         
     </div>
-    <a class="headerlink" href="#OutputData"></a>
+    <a class="headerlink" href="#Config.__init__"></a>
     
-            <div class="docstring"><p>Placeholder, will be replaced by a more specific
-type / pydantic model in the future.</p>
+    
+
+                            </div>
+                            <div id="Config.path_input" class="classattr">
+                                <div class="attr variable">
+            <span class="name">path_input</span><span class="annotation">: pathlib.Path</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Config.path_input"></a>
+    
+    
+
+                            </div>
+                            <div id="Config.path_output" class="classattr">
+                                <div class="attr variable">
+            <span class="name">path_output</span><span class="annotation">: pathlib.Path</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Config.path_output"></a>
+    
+    
+
+                            </div>
+                </section>
+                <section id="InputData">
+                            <input id="InputData-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator">@dataclass</div>
+
+    <span class="def">class</span>
+    <span class="name">InputData</span>:
+
+                <label class="view-source-button" for="InputData-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#InputData"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="InputData-20"><a href="#InputData-20"><span class="linenos">20</span></a><span class="nd">@dataclass</span>
+</span><span id="InputData-21"><a href="#InputData-21"><span class="linenos">21</span></a><span class="k">class</span> <span class="nc">InputData</span><span class="p">:</span>
+</span><span id="InputData-22"><a href="#InputData-22"><span class="linenos">22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raw actigraphy data and metadata.</span>
+</span><span id="InputData-23"><a href="#InputData-23"><span class="linenos">23</span></a>
+</span><span id="InputData-24"><a href="#InputData-24"><span class="linenos">24</span></a><span class="sd">    This class should provide access to all raw input data.</span>
+</span><span id="InputData-25"><a href="#InputData-25"><span class="linenos">25</span></a><span class="sd">    It must not be mutated during processing.</span>
+</span><span id="InputData-26"><a href="#InputData-26"><span class="linenos">26</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="InputData-27"><a href="#InputData-27"><span class="linenos">27</span></a>
+</span><span id="InputData-28"><a href="#InputData-28"><span class="linenos">28</span></a>    <span class="n">acceleration</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span>
+</span><span id="InputData-29"><a href="#InputData-29"><span class="linenos">29</span></a>    <span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">float</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Raw actigraphy data and metadata.</p>
+
+<p>This class should provide access to all raw input data.
+It must not be mutated during processing.</p>
+</div>
+
+
+                            <div id="InputData.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">InputData</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">acceleration</span><span class="p">:</span> <span class="n">polars</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>, </span><span class="param"><span class="n">sampling_rate</span><span class="p">:</span> <span class="nb">float</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#InputData.__init__"></a>
+    
+    
+
+                            </div>
+                            <div id="InputData.acceleration" class="classattr">
+                                <div class="attr variable">
+            <span class="name">acceleration</span><span class="annotation">: polars.dataframe.frame.DataFrame</span>
+
+        
+    </div>
+    <a class="headerlink" href="#InputData.acceleration"></a>
+    
+    
+
+                            </div>
+                            <div id="InputData.sampling_rate" class="classattr">
+                                <div class="attr variable">
+            <span class="name">sampling_rate</span><span class="annotation">: float</span>
+
+        
+    </div>
+    <a class="headerlink" href="#InputData.sampling_rate"></a>
+    
+    
+
+                            </div>
+                </section>
+                <section id="OutputData">
+                            <input id="OutputData-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator">@dataclass</div>
+
+    <span class="def">class</span>
+    <span class="name">OutputData</span>:
+
+                <label class="view-source-button" for="OutputData-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#OutputData"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="OutputData-32"><a href="#OutputData-32"><span class="linenos">32</span></a><span class="nd">@dataclass</span>
+</span><span id="OutputData-33"><a href="#OutputData-33"><span class="linenos">33</span></a><span class="k">class</span> <span class="nc">OutputData</span><span class="p">:</span>
+</span><span id="OutputData-34"><a href="#OutputData-34"><span class="linenos">34</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Processed actigraphy data and metadata.</span>
+</span><span id="OutputData-35"><a href="#OutputData-35"><span class="linenos">35</span></a>
+</span><span id="OutputData-36"><a href="#OutputData-36"><span class="linenos">36</span></a><span class="sd">    This class should provide access to all processed data.</span>
+</span><span id="OutputData-37"><a href="#OutputData-37"><span class="linenos">37</span></a><span class="sd">    It is mutated during processing.</span>
+</span><span id="OutputData-38"><a href="#OutputData-38"><span class="linenos">38</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="OutputData-39"><a href="#OutputData-39"><span class="linenos">39</span></a>
+</span><span id="OutputData-40"><a href="#OutputData-40"><span class="linenos">40</span></a>    <span class="k">pass</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Processed actigraphy data and metadata.</p>
+
+<p>This class should provide access to all processed data.
+It is mutated during processing.</p>
 </div>
 
 

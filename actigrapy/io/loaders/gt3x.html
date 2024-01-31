@@ -58,20 +58,26 @@
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Loader for the .gt3x file format.&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">os</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">pathlib</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">pygt3x.reader</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">actigrapy.common.data_model</span> <span class="kn">import</span> <span class="n">InputData</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span> <span class="nn">pygt3x.reader</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">actigrapy.common.data_model</span> <span class="kn">import</span> <span class="n">InputData</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputData</span><span class="p">:</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Load actigraphy data from .gt3x file.&quot;&quot;&quot;</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">with</span> <span class="n">pygt3x</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">FileReader</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">return</span> <span class="n">df</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputData</span><span class="p">:</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Load input data from .gt3x file.&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">with</span> <span class="n">pygt3x</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">FileReader</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">acceleration</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">sample_rate</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">return</span> <span class="n">InputData</span><span class="p">(</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="n">acceleration</span><span class="o">=</span><span class="n">acceleration</span><span class="p">,</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="n">sampling_rate</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="p">)</span>
 </span></pre></div>
 
 
@@ -81,23 +87,28 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">load</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>:</span></span>
+        <span class="name">load</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span></span><span class="return-annotation">) -> <span class="n"><a href="../../common/data_model.html#InputData">actigrapy.common.data_model.InputData</a></span>:</span></span>
 
                 <label class="view-source-button" for="load-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#load"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="load-11"><a href="#load-11"><span class="linenos">11</span></a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
-</span><span id="load-12"><a href="#load-12"><span class="linenos">12</span></a>    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span id="load-13"><a href="#load-13"><span class="linenos">13</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputData</span><span class="p">:</span>
-</span><span id="load-14"><a href="#load-14"><span class="linenos">14</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Load actigraphy data from .gt3x file.&quot;&quot;&quot;</span>
-</span><span id="load-15"><a href="#load-15"><span class="linenos">15</span></a>    <span class="k">with</span> <span class="n">pygt3x</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">FileReader</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
-</span><span id="load-16"><a href="#load-16"><span class="linenos">16</span></a>        <span class="n">df</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-</span><span id="load-17"><a href="#load-17"><span class="linenos">17</span></a>    <span class="k">return</span> <span class="n">df</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="load-12"><a href="#load-12"><span class="linenos">12</span></a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+</span><span id="load-13"><a href="#load-13"><span class="linenos">13</span></a>    <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+</span><span id="load-14"><a href="#load-14"><span class="linenos">14</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputData</span><span class="p">:</span>
+</span><span id="load-15"><a href="#load-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Load input data from .gt3x file.&quot;&quot;&quot;</span>
+</span><span id="load-16"><a href="#load-16"><span class="linenos">16</span></a>    <span class="k">with</span> <span class="n">pygt3x</span><span class="o">.</span><span class="n">reader</span><span class="o">.</span><span class="n">FileReader</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+</span><span id="load-17"><a href="#load-17"><span class="linenos">17</span></a>        <span class="n">acceleration</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+</span><span id="load-18"><a href="#load-18"><span class="linenos">18</span></a>        <span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">sample_rate</span>
+</span><span id="load-19"><a href="#load-19"><span class="linenos">19</span></a>
+</span><span id="load-20"><a href="#load-20"><span class="linenos">20</span></a>    <span class="k">return</span> <span class="n">InputData</span><span class="p">(</span>
+</span><span id="load-21"><a href="#load-21"><span class="linenos">21</span></a>        <span class="n">acceleration</span><span class="o">=</span><span class="n">acceleration</span><span class="p">,</span>
+</span><span id="load-22"><a href="#load-22"><span class="linenos">22</span></a>        <span class="n">sampling_rate</span><span class="o">=</span><span class="n">sampling_rate</span><span class="p">,</span>
+</span><span id="load-23"><a href="#load-23"><span class="linenos">23</span></a>    <span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Load actigraphy data from <a href="">actigrapy.io.loaders.gt3x</a> file.</p>
+            <div class="docstring"><p>Load input data from <a href="">actigrapy.io.loaders.gt3x</a> file.</p>
 </div>
 
 
